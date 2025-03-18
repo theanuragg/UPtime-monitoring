@@ -9,6 +9,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
+    "@clerk/nextjs": "^6.12.5",
     "@solana/web3.js": "^1.98.0",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
