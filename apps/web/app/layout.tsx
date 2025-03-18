@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import {ClerkProvider} from '@clerk/nextjs'
+import { Appbar } from "./components/Appbar";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -25,9 +27,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+    <ClerkProvider>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        <Appbar/>
         {children}
       </body>
+      </ClerkProvider>
     </html>
   );
 }
