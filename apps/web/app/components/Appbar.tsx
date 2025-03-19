@@ -9,7 +9,7 @@ import {
   } from '@clerk/nextjs'
 
 export function Appbar() {
-    return  <div className="">
+    return  <div className="flex justify-between items-center p-4">
         <div>DPin Uptime</div> 
         <div>
             <SignedOut> 
