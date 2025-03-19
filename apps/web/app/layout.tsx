@@ -30,7 +30,7 @@ export default function RootLayout({
     <html lang="en">
     <ClerkProvider>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <ThemeProvider defaultTheme="dark" attribute="class" forcedTheme="dark">
+        <ThemeProvider defaultTheme="light" attribute="class" forcedTheme="light">
         <Appbar/>
         {children}
         </ThemeProvider>

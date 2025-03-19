@@ -10,14 +10,14 @@ export function Appbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm py-4">
+    <header className="fixed w-full z-50 py-4 top-0 start-0 border-b border-gray-200 bg-opacity-15 dark:border-gray-600 backdrop-blur-lg  dark:opacity-70" style={{ opacity: 1}}>
       <div className="container mx-auto px-6 flex items-center justify-between">
         {/* Logo */}
         <a href="#" className="text-xl font-semibold text-primary">DPin Uptime</a>
         
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-6">
-          {['Features', 'Pricing', 'About', 'FAQ'].map((item) => (
+          {['Features', 'Pricing', 'About'].map((item) => (
             <a
               key={item}
               href={`#${item.toLowerCase()}`}
@@ -53,7 +53,7 @@ export function Appbar() {
           </SheetTrigger>
           <SheetContent side="right" className="w-[250px] sm:w-[300px]">
             <nav className="flex flex-col gap-4 mt-8">
-              {['Features', 'Pricing', 'About', 'FAQ'].map((item) => (
+              {['Features', 'Pricing', 'About'].map((item) => (
                 <a
                   key={item}
                   href={`#${item.toLowerCase()}`}
