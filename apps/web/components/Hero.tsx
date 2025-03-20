@@ -44,17 +44,17 @@ const Hero = () => {
       <div className="container max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div ref={elementsRef} className="space-y-6">
-            <div className="inline-flex items-center space-x-2 rounded-full bg-primary/10 px-3 py-1 text-sm text-primary reveal">
+            <div className="inline-flex items-center space-x-2 rounded-full bg-blue-100 px-3 py-1 text-sm text-primary reveal">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-800 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-800"></span>
               </span>
-              <span>Monitor your services in real-time</span>
+              <span className="text-blue-600">Monitor your services in real-time</span>
             </div>
             
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-balance reveal stagger-1">
               Know when your services are <br className="hidden sm:block" /> 
-              <span className="text-primary text-blue-800">down before</span> your users do.
+              <span className=" text-blue-800">down before</span> your users do.
             </h1>
             
             <p className="text-xl text-muted-foreground max-w-xl text-balance reveal stagger-2">
