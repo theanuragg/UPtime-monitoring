@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -7,44 +7,58 @@ import {
   BarChart2,
   Bell,
   FileText,
-  HelpCircle,
-  LogOut,
-  MonitorSmartphone,
   PhoneCall,
   Server,
-  Settings,
   Shield,
-  User,
 } from "lucide-react";
-import { SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@components/ui/sidebar";
+import {
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+} from "@components/ui/sidebar";
 
 const AppSidebar = () => {
   const pathname = usePathname();
 
   interface bottomMenuItems {
-    icon: "" ,
-    label: "",
-    path : "" 
+    icon: "";
+    label: "";
+    path: "";
   }
 
   const menuItems = [
     { icon: Activity, label: "What's New", path: "/whats-new" },
     { icon: BarChart2, label: "Dashboard", path: "/dashboard" },
     { icon: Server, label: "Monitoring", path: "/service/1" },
-    { icon: Shield, label: "Status Pages", path: "/status-pages", badge: "coming soon" },
+    {
+      icon: Shield,
+      label: "Status Pages",
+      path: "/status-pages",
+      badge: "coming soon",
+    },
     { icon: Bell, label: "Alerts", path: "/alerts" },
-    { icon: FileText, label: "Reports", path: "/reports", badge: "coming soon" },
-    { icon: PhoneCall, label: "IRM & On-Call", path: "/irm", badge: "Coming Soon" },
+    {
+      icon: FileText,
+      label: "Reports",
+      path: "/reports",
+      badge: "coming soon",
+    },
+    {
+      icon: PhoneCall,
+      label: "IRM & On-Call",
+      path: "/irm",
+      badge: "Coming Soon",
+    },
   ];
 
-//   const bottomMenuItems = [
-//     { icon: User, label: "Notifications", path: "/notifications" },
-//     { icon: MonitorSmartphone, label: "Probe Servers", path: "/probe-servers" },
-//     { icon: Settings, label: "Settings", path: "/settings" },
-//     { icon: FileText, label: "Billing", path: "/billing" },
-//     { icon: HelpCircle, label: "Support", path: "/support", badge: "New" },
-//     { icon: LogOut, label: "Log Out", path: "/logout" },
-//   ];
+  //   const bottomMenuItems = [
+  //     { icon: User, label: "Notifications", path: "/notifications" },
+  //     { icon: MonitorSmartphone, label: "Probe Servers", path: "/probe-servers" },
+  //     { icon: Settings, label: "Settings", path: "/settings" },
+  //     { icon: FileText, label: "Billing", path: "/billing" },
+  //     { icon: HelpCircle, label: "Support", path: "/support", badge: "New" },
+  //     { icon: LogOut, label: "Log Out", path: "/logout" },
+  //   ];
 
   const isActive = (path) => {
     if (path === "/dashboard" && pathname === "/dashboard") {
@@ -73,7 +87,10 @@ const AppSidebar = () => {
           {menuItems.map((item) => (
             <SidebarMenuItem key={item.label}>
               <SidebarMenuButton asChild isActive={isActive(item.path)}>
-                <Link href={item.path} className="flex w-full items-center justify-between">
+                <Link
+                  href={item.path}
+                  className="flex w-full items-center justify-between"
+                >
                   <div className="flex items-center gap-2">
                     <item.icon className="h-4 w-4" />
                     <span>{item.label}</span>

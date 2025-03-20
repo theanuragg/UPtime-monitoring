@@ -16,7 +16,7 @@ const AppLayout = ({ children, title, actions }: AppLayoutProps) => {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen mt-20 bg-white">
       <SidebarProvider defaultOpen={!collapsed}>
         <div className="flex min-h-screen w-full">
           <Sidebar className="border-r bg-[#1A1F2C] text-white">

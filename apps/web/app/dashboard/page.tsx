@@ -11,7 +11,7 @@ import { Card, CardContent } from "@components/ui/card";
 import ServiceCard from "@components/ServiceCard";
 import SummaryCard from "@components/SummaryCard";
 // import AddServiceDialog from "@components/AddServiceDialog";
-import  AppSideBar  from "@components/Appsidebar"
+import AppLayout from "@components/Applayout";
 import { toast } from "sonner";
 import type { ServiceFormValues } from "@components/AddServiceDailog";
 
@@ -103,47 +103,46 @@ const Dashboard = () => {
       )
     : serviceData;
 
+  const headerActions = (
+    <div className="flex items-center gap-2">
+      <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => toast.success("Refreshing data...")}>
+        <RefreshCcw className="h-4 w-4" />
+      </Button>
+      <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => setDialogOpen(true)}>
+        <Plus className="h-4 w-4" />
+      </Button>
+      <Button variant="outline" size="icon" className="h-8 w-8">
+        <div className="grid place-items-center">⋮</div>
+      </Button>
+    </div>
+  );
+
   return (
-    <div className=" mt-32 px-16 ">
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1p md:grid-cols-4 gap-4 mb-8">
-        <SummaryCard
-          title="1 total checks"
-          items={totalChecksData}
-          linkText="View"
-        />
-        <SummaryCard title="Outages" items={outagesData} linkText="View" />
-        <SummaryCard
-          title="Response Time"
-          items={responseTimeData}
-          linkText="View"
-        />
-        <SummaryCard title="Other" items={otherData} linkText="View" />
-      </div>
+    <div className="mt-20">
+    <AppLayout title="Dashboard" actions={headerActions}>
+      <div className="px-8 py-6">
+        {/* Summary Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+          <SummaryCard title="1 total checks" items={totalChecksData} linkText="View" />
+          <SummaryCard title="Outages" items={outagesData} linkText="View" />
+          <SummaryCard title="Response Time" items={responseTimeData} linkText="View" />
+          <SummaryCard title="Other" items={otherData} linkText="View" />
+        </div>
 
-      {/* Service Checks */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {filteredServices.length > 0 ? (
-          filteredServices.map((service) => (
-            <ServiceCard
-              key={service.id}
-              service={service}
-              onClick={() => handleServiceClick(service.id)}
-            />
-          ))
-        ) : (
-          <div className="col-span-3 text-center p-8 border rounded-lg">
-            No services found matching "{searchQuery}"
-          </div>
-        )}
+        {/* Service Checks */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {filteredServices.length > 0 ? (
+            filteredServices.map((service) => (
+              <ServiceCard key={service.id} service={service} onClick={() => handleServiceClick(service.id)} />
+            ))
+          ) : (
+            <div className="col-span-3 text-center p-8 border rounded-lg">
+              No services found matching "{searchQuery}"
+            </div>
+          )}
+        </div>
       </div>
-
-      {/* Add Service Dialog */}
-      {/* <AddServiceDialog
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
-        onServiceAdd={handleAddService}
-      /> */}
+    </AppLayout>
     </div>
   );
 };
