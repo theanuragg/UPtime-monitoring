@@ -9,7 +9,7 @@ cors({
     origin: "*"
 })
 
-app.use('*', authMiddleware)
+// app.use('*', authMiddleware)
 app.use('/api', websiteRouter)
 
 app.listen(PORT, () => {
