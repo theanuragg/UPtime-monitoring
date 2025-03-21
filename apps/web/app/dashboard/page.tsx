@@ -91,7 +91,7 @@ const Dashboard = () => {
   };
 
   const handleServiceClick = (id: number) => {
-    router.push(`/service/${id}`);
+    router.push(`/dashboard/Service/${id}`);
   };
 
   const filteredServices = searchQuery
@@ -103,8 +103,12 @@ const Dashboard = () => {
       )
     : serviceData;
 
-  const headerActions = (
-    <div className="flex items-center gap-2">
+  
+
+  return (
+    <div className="mt-20">
+ <div className="items-end flex" >
+  <div className="flex items-center gap-2">
       <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => toast.success("Refreshing data...")}>
         <RefreshCcw className="h-4 w-4" />
       </Button>
@@ -115,12 +119,8 @@ const Dashboard = () => {
         <div className="grid place-items-center">⋮</div>
       </Button>
     </div>
-  );
-
-  return (
-    <div className="mt-20">
-    <AppLayout title="Dashboard" actions={headerActions}>
-      <div className="px-8 py-6">
+  </div> 
+    <div className="px-8 py-6">
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <SummaryCard title="1 total checks" items={totalChecksData} linkText="View" />
@@ -142,7 +142,6 @@ const Dashboard = () => {
           )}
         </div>
       </div>
-    </AppLayout>
     </div>
   );
 };

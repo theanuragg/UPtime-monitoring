@@ -33,7 +33,7 @@ interface AddServiceDialogProps {
 
 const AddServiceDialog = ({ open, onOpenChange, onServiceAdd }: AddServiceDialogProps) => {
   const form = useForm<ServiceFormValues>({
-    resolver: zodResolver(formSchema),
+    // resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       url: "",
@@ -87,7 +87,7 @@ const AddServiceDialog = ({ open, onOpenChange, onServiceAdd }: AddServiceDialog
               )}
             />
 
-            <FormField
+            {/* <FormField
               control={form.control}
               name="type"
               render={({ field }) => (
@@ -112,7 +112,7 @@ const AddServiceDialog = ({ open, onOpenChange, onServiceAdd }: AddServiceDialog
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
 
             <DialogFooter>
               <Button type="submit">Add Service</Button>

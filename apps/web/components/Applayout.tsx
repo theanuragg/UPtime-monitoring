@@ -1,5 +1,5 @@
 
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode} from "react";
 import { 
   SidebarProvider, Sidebar, SidebarContent, 
   SidebarFooter, SidebarTrigger 
@@ -13,11 +13,11 @@ interface AppLayoutProps {
 }
 
 const AppLayout = ({ children, title, actions }: AppLayoutProps) => {
-  const [collapsed, setCollapsed] = useState(false);
+  
 
   return (
     <div className="min-h-screen mt-20 bg-white">
-      <SidebarProvider defaultOpen={!collapsed}>
+      <SidebarProvider >
         <div className="flex min-h-screen w-full">
           <Sidebar className="border-r bg-[#1A1F2C] text-white">
             <SidebarContent className="flex flex-col h-full">
