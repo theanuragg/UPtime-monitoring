@@ -4,9 +4,9 @@ import { useRouter, useParams } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@components/ui/button';
  import AppLayout from '@components/Applayout'
-// import ServiceActionButtons from '@components/service-detail/ServiceActionButtons';
-// import ServiceContent from '@components/service-detail/ServiceContent';
-// import ServiceSidebar from '@components/service-detail/ServiceSidebar';
+import ServiceActionButtons from '@components/Service-detail/SerciveAction';
+import ServiceContent from '@components/Service-detail/ServiceContent';
+import ServiceSidebar from '@components/Service-detail/seriveSidebar';
 
 // Sample data for response time
 const responseTimeData = [
@@ -66,20 +66,20 @@ const ServiceDetail = () => {
       
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         <div className="col-span-2">
-          {/* <ServiceContent 
+          <ServiceContent 
             serviceName={serviceName}
             serviceType={serviceType}
             responseTimeData={responseTimeData}
-          /> */}
+          />
         </div>
 
         <div className="col-span-1">
-          {/* <ServiceSidebar 
+          <ServiceSidebar 
             currentStatus={currentStatus}
             uptime={uptime}
             uptimeDuration={uptimeDuration}
             uptimeTimestamp={uptimeTimestamp}
-          /> */}
+          />
         </div>
       </div>
     </div>
