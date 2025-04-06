@@ -1,26 +1,54 @@
-import type { NextFunction, Request, Response } from "express";
+import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { JWT_PUBLIC_KEY } from "../Config/config";
+import rateLimit from "express-rate-limit";
 
-export const authMiddleware = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const token = req.headers["authorization"];
-  if (!token) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
+interface DecodedToken {
+  sub: string;
+}
 
-  const decoded = jwt.verify(token, JWT_PUBLIC_KEY);
+function handleError(res: Response, message: string) {
+  res.status(401).json({
+    message,
+    success: false,
+  });
+}
 
-  console.log(decoded);
 
-  if (!decoded || !decoded.sub) {
-    return res.status(401).json({ error: "unauth" });
-  }
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, 
+  max: 100, 
+  message: {
+    message: "Too many requests, don't so it stop it",
+    success: false,
+  },
+});
 
-  req.userId = decoded.sub as string;
-  req.userId = "1"
-  next();
-};
+export const authMiddleware = [
+  limiter, 
+  (req: Request, res: Response, next: NextFunction) => {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      handleError(res, "No token provided in the header");
+      return;
+    }
+
+    let decoded: DecodedToken;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_PUBLIC_KEY!, {
+        algorithms: ["RS256"],
+      }) as DecodedToken;
+    } catch {
+      handleError(res, "Invalid token or token expired");
+      return;
+    }
+
+    const userId = decoded.sub;
+    if (!userId) {
+      handleError(res, "Invalid token or token expired");
+      return;
+    }
+    
+    req.userId = userId;
+    next();
+  },
+];
