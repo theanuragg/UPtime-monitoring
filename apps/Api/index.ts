@@ -10,11 +10,10 @@ app.use(cors({
     origin: '*',
 }))
 
-app.use('/api', websiteRouter, (req, res, next) => {
-    authMiddleware(req, res, next);
-});
+app.use('/api', websiteRouter)
+    
 
-app.get('/', (req, res ) => {
+app.post('/', (req, res ) => {
     res.json("Welcome to the API!")
 })
 

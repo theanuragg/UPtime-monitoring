@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { prisma } from "db/client";
+import { error } from "console";
 
 const handleUnauthorizedAccess = (res: Response) => {
   res.status(401).json({
@@ -17,9 +18,10 @@ export const createWebsite = async (req: Request, res: Response) => {
     }
     const { url } = req.body;
     if (!url) {
-      res.status(400).json({
-        message: "Url is required",
+      res.status(400, ).json({
+        message: "Url is  much required",
         success: false,
+
       });
       return;
     }
@@ -35,6 +37,7 @@ export const createWebsite = async (req: Request, res: Response) => {
       data: website,
     });
   } catch (err) {
+    console.log(err)
     res.status(500).json({
       message: "Internal server error",
       success: false,
