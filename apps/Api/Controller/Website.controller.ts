@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { prisma } from "db/client";
-import { error } from "console";
+
 
 const handleUnauthorizedAccess = (res: Response) => {
   res.status(401).json({
@@ -18,10 +18,9 @@ export const createWebsite = async (req: Request, res: Response) => {
     }
     const { url } = req.body;
     if (!url) {
-      res.status(400, ).json({
-        message: "Url is  much required",
+      res.status(400).json({
+        message: "Url is required",
         success: false,
-
       });
       return;
     }
@@ -56,6 +55,7 @@ export const getWebsiteStatus = async (req: Request, res: Response) => {
       where: {
         id,
         userId: req.userId,
+        disabled: false,
       },
       include: {
         ticks: true,
@@ -91,6 +91,7 @@ export const getWebsites = async (req: Request, res: Response) => {
     const websites = await prisma.website.findMany({
       where: {
         userId,
+        disabled: false,
       },
     });
     res.status(200).json({
