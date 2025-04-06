@@ -1,108 +1,137 @@
-import express from 'express'
 import type { Request, Response, NextFunction } from "express";
 import { prisma } from "db/client";
-import { z } from "zod";
 
-const handleError = (res: Response, error: any) => {
-    console.error(error); 
-    res.status(500).json({ error: 'Internal Server Error' }); 
+const handleUnauthorizedAccess = (res: Response) => {
+  res.status(401).json({
+    message: "Unauthorized access",
+    success: false,
+  });
 };
 
-const querySchema = z.object({
-    websiteId: z.string().nonempty("Website ID is required"),
-});
-
-
-export const websitecreate = async (req: Request, res: Response, next: NextFunction) => {
-    const userId = req.userId!;
+export const createWebsite = async (req: Request, res: Response) => {
+  try {
+    const userId = req.userId;
+    if (!userId) {
+      handleUnauthorizedAccess(res);
+      return;
+    }
     const { url } = req.body;
-
-    try {
-        const data = await prisma.website.create({
-            data: {
-                userId,
-                url,
-            },
-        });
-        res.status(201).json({ id: data.id }); 
-    } catch (error) {
-        handleError(res, error);
+    if (!url) {
+      res.status(400).json({
+        message: "Url is required",
+        success: false,
+      });
+      return;
     }
+    const website = await prisma.website.create({
+      data: {
+        url,
+        userId,
+      },
+    });
+    res.status(201).json({
+      message: "Website created successfully",
+      success: true,
+      data: website,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: "Internal server error",
+      success: false,
+      error: err,
+    });
+  }
 };
-
-export const websiteStatus = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const validatedQuery = querySchema.parse(req.query); 
-        const websiteId = validatedQuery.websiteId;
-        const userId = req.userId;
-
-        const data = await prisma.website.findFirst({
-            where: {
-                id: websiteId,
-                userId,
-                disabled: false,
-            },
-            include: {
-                ticks: true,
-            },
-        });
-
-        if (!data) {
-             res.status(404).json({ error: 'Website not found' }); 
-        }
-        res.status(200).json(data); 
-    } catch (error) {
-        if (error instanceof z.ZodError) {
-             res.status(400).json({ error: error.errors }); 
-        }
-        handleError(res, error);
+export const getWebsiteStatus = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.body;
+    if (!req.userId) {
+      handleUnauthorizedAccess(res);
+      return;
     }
-};
-
-export const websitesStatus = async (req: Request, res: Response, next: NextFunction) => {
-    const userId = req.userId!;
-
-    try {
-        const websites = await prisma.website.findMany({
-            where: {
-                userId,
-                disabled: false,
-            },
-            include: {
-                ticks: true,
-            },
-        });
-        res.status(200).json(websites); 
-    } catch (error) {
-        handleError(res, error);
+    const website = await prisma.website.findFirst({
+      where: {
+        id,
+        userId: req.userId,
+      },
+      include: {
+        ticks: true,
+      },
+    });
+    if (!website) {
+      res.status(404).json({
+        message: "Website not found",
+        success: false,
+      });
+      return;
     }
+    res.status(200).json({
+      message: "Website found",
+      success: true,
+      website: website,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: "Internal server error",
+      success: false,
+      error: err,
+    });
+  }
 };
-
-
-export const websiteupadte = async (req: Request, res: Response, next: NextFunction) => {
-    const websiteId = req.body.webisteId;
-    const userId = req.userId!;
-
-    try {
-        const updatedWebsite = await prisma.website.update({
-            where: {
-                id: websiteId,
-                userId,
-            },
-            data: {
-                disabled: true,
-            },
-        });
-        res.status(200).json({ message: "Website disabled successfully" }); 
-    } catch (error: any) {
-        if (error.code === 'P2025') { 
-             res.status(404).json({ error: 'Website not found' }); 
-        }
-        handleError(res, error);
+export const getWebsites = async (req: Request, res: Response) => {
+  try {
+    const userId = req.userId;
+    if (!userId) {
+      handleUnauthorizedAccess(res);
+      return;
     }
+    const websites = await prisma.website.findMany({
+      where: {
+        userId,
+      },
+    });
+    res.status(200).json({
+      message: "Websites found",
+      success: true,
+      websites,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: "Internal server error",
+      success: false,
+      error: err,
+    });
+  }
 };
-
-
-export const payoutwithvalidator = async (req: Request, res: Response, next: NextFunction) => {
-    
+export const deleteWebsite = async (req: Request, res: Response) => {
+  try {
+    const userId = req.userId;
+    const { id } = req.params;
+    if (!userId) {
+      handleUnauthorizedAccess(res);
+      return;
+    }
+    const website = await prisma.website.delete({
+      where: {
+        id,
+        userId,
+      },
+    });
+    if (!website) {
+      res.status(404).json({
+        message: "Website not found",
+        success: false,
+      });
+      return;
+    }
+    res.status(200).json({
+      message: "Website deleted successfully",
+      success: true,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: "Internal server error",
+      success: false,
+    });
+  }
 };
