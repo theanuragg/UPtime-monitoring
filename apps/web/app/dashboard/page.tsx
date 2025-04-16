@@ -2,16 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, RefreshCcw, Search } from "lucide-react";
+import { Plus, RefreshCcw } from "lucide-react";
 import { Button } from "@components/ui/button";
-import { Input } from "@components/ui/input";
-import { Card, CardContent } from "@components/ui/card";
-// import { useNavigate } from "react-router-dom";
-// import AppLayout from "@components/AppLayout";
+
 import ServiceCard from "@components/ServiceCard";
 import SummaryCard from "@components/SummaryCard";
 // import AddServiceDialog from "@components/AddServiceDialog";
-import AppLayout from "@components/Applayout";
 import { toast } from "sonner";
 import type { ServiceFormValues } from "@components/AddServiceDailog";
 
@@ -55,7 +51,7 @@ interface Service {
 
 const Dashboard = () => {
   const router = useRouter();
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery] = useState("");
   const [serviceData, setServiceData] = useState<Service[]>([
     {
       id: 1,
@@ -71,7 +67,7 @@ const Dashboard = () => {
     },
   ]);
 
-  const [dialogOpen, setDialogOpen] = useState(false);
+
 
   const handleAddService = (service: ServiceFormValues) => {
     const newService = {
@@ -112,7 +108,18 @@ const Dashboard = () => {
       <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => toast.success("Refreshing data...")}>
         <RefreshCcw className="h-4 w-4" />
       </Button>
-      <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => setDialogOpen(true)}>
+      <Button
+        variant="outline"
+        size="icon"
+        className="h-8 w-8"
+        onClick={() =>
+          handleAddService({
+            name: "New Service",
+            type: "HTTP(S)",
+            url: "https://example.com",
+          })
+        }
+      >
         <Plus className="h-4 w-4" />
       </Button>
       <Button variant="outline" size="icon" className="h-8 w-8">
@@ -137,7 +144,7 @@ const Dashboard = () => {
             ))
           ) : (
             <div className="col-span-3 text-center p-8 border rounded-lg">
-              No services found matching "{searchQuery}"
+              No services found matching &quot;{searchQuery}&quot;
             </div>
           )}
         </div>

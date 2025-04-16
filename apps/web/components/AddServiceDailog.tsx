@@ -2,7 +2,6 @@
 
 import React from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { 
   Dialog, 
   DialogContent, 
@@ -14,25 +13,20 @@ import {
 import { Button } from "@components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@components/ui/form";
 import { Input } from "@components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@components/ui/select";
 
 
-const formSchema = z.object({
-  name: z.string().min(2, { message: "Name must be at least 2 characters." }),
-  url: z.string().url({ message: "Please enter a valid URL." }),
-  type: z.string().min(1, { message: "Please select a check type." }),
-});
 
-export type ServiceFormValues = z.infer<typeof formSchema>;
+
+
 
 interface AddServiceDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onServiceAdd: (service: ServiceFormValues) => void;
+  onServiceAdd: () => void;
 }
 
 const AddServiceDialog = ({ open, onOpenChange, onServiceAdd }: AddServiceDialogProps) => {
-  const form = useForm<ServiceFormValues>({
+  const form = useForm({
     // resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
@@ -41,8 +35,10 @@ const AddServiceDialog = ({ open, onOpenChange, onServiceAdd }: AddServiceDialog
     },
   });
 
-  const onSubmit = (values: ServiceFormValues) => {
-    onServiceAdd(values);
+  const onSubmit = () => {
+    onServiceAdd(form.getValues(), form.getValues("name"));
+    form.setValue("url", "");
+    form.setValue("name", "");
     form.reset();
     onOpenChange(false);
   };

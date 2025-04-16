@@ -1,10 +1,8 @@
 'use client';
 
-import { useRouter, useParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@components/ui/button';
- import AppLayout from '@components/Applayout'
-import ServiceActionButtons from '@components/Service-detail/SerciveAction';
 import ServiceContent from '@components/Service-detail/ServiceContent';
 import ServiceSidebar from '@components/Service-detail/seriveSidebar';
 
@@ -38,8 +36,7 @@ const responseTimeData = [
 
 const ServiceDetail = () => {
   const router = useRouter();
-  const params = useParams();
-  const id = params?.id;
+  // const id = params?.id; // Removed unused variable
 
   const serviceName = 'portfolio-three-chi.vercel.app';
   const serviceType = 'HTTP(S)';

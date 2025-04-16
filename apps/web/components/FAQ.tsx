@@ -2,7 +2,12 @@
 
 import { useState } from 'react';
 
-const faqs = [
+interface FAQ {
+  question: string;
+  answer: string;
+}
+
+const faqs: FAQ[] = [
   {
     question: 'How long does it take to get started with Feature?',
     answer: 'It usually takes just a few minutes to get started.',
@@ -34,9 +39,10 @@ const faqs = [
 ];
 
 export default function FaqSection() {
-  const [openIndex, setOpenIndex] = useState(null);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-  const toggleFAQ = (index) => {
+
+  const toggleFAQ = (index: number): void => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
