@@ -2,15 +2,18 @@ import express from "express";
 import { websiteRouter } from './Routes/website'
 import cors from 'cors'
 import { authMiddleware } from "./middlewares/Authmiddlewares";
+import { rateLimiter } from "./middlewares/Ratelimiting";
 
 const app = express();
 const PORT = 8000;
 
 app.use(cors({
-    origin: '*',
+    origin: 'http://localhost:3000',
 }))
 
-app.use('/api', websiteRouter)
+app.use(express.json(), rateLimiter)
+
+app.use('/api', authMiddleware, websiteRouter)
     
 
 app.post('/', (req, res ) => {
