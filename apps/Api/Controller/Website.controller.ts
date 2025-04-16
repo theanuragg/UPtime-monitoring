@@ -1,17 +1,16 @@
 import type { Request, Response, NextFunction } from "express";
 import { prisma } from "db/client";
 
-
 const handleUnauthorizedAccess = (res: Response) => {
   res.status(401).json({
     message: "Unauthorized access",
     success: false,
   });
 };
-
 export const createWebsite = async (req: Request, res: Response) => {
   try {
     const userId = req.userId;
+    console.log("Request body:", req.body); 
     if (!userId) {
       handleUnauthorizedAccess(res);
       return;
@@ -22,6 +21,7 @@ export const createWebsite = async (req: Request, res: Response) => {
         message: "Url is required",
         success: false,
       });
+      console.log("erorr")
       return;
     }
     const website = await prisma.website.create({
