@@ -2,6 +2,10 @@
   "name": "api",
   "module": "index.ts",
   "type": "module",
+  "scripts": {
+    "dev": "bun index.ts",
+    "start": "bun index.ts"
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },
@@ -9,6 +13,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
+    "@clerk/clerk-sdk-node": "^5.1.6",
     "@clerk/nextjs": "^6.12.5",
     "@solana/web3.js": "^1.98.0",
     "@types/cors": "^2.8.17",
