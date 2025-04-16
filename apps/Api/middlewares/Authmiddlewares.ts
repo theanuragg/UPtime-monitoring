@@ -1,54 +1,46 @@
 import type { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
-import rateLimit from "express-rate-limit";
+import { clerkClient } from "@clerk/clerk-sdk-node";
+import { prisma } from "db/client";
+export async function authMiddleware(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const clerkId = req.headers.clerkid as string | undefined;
+  if (!clerkId) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
 
-interface DecodedToken {
-  sub: string;
-}
+ 
+  let email = "";
+  try {
+    const clerkUser = await clerkClient.users.getUser(clerkId);
+    email = clerkUser.emailAddresses[0]?.emailAddress || "";
+  } catch (err) {
+    console.error("Error fetching user from Clerk:", err);
+    return res.status(401).json({ error: "Failed to verify Clerk user" });
+  }
 
-function handleError(res: Response, message: string) {
-  res.status(401).json({
-    message,
-    success: false,
+  if (!email) {
+    return res.status(401).json({ error: "No email found for user" });
+  }
+   
+  let user = await prisma.user.findUnique({
+    where: {
+      clerk: clerkId,
+    },
   });
+
+  if (!user) {
+    user = await prisma.user.create({
+      data: {
+        clerk: clerkId,
+        email,
+      },
+    });
+  }
+
+  req.userId = user.id;
+  next();
 }
 
-
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, 
-  max: 100, 
-  message: {
-    message: "Too many requests, don't so it stop it",
-    success: false,
-  },
-});
-
-export const authMiddleware = [
-  limiter, 
-  (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers.authorization?.split(" ")[1];
-    if (!token) {
-      handleError(res, "No token provided in the header");
-      return;
-    }
-
-    let decoded: DecodedToken;
-    try {
-      decoded = jwt.verify(token, process.env.JWT_PUBLIC_KEY!, {
-        algorithms: ["RS256"],
-      }) as DecodedToken;
-    } catch {
-      handleError(res, "Invalid token or token expired");
-      return;
-    }
-
-    const userId = decoded.sub;
-    if (!userId) {
-      handleError(res, "Invalid token or token expired");
-      return;
-    }
-    
-    req.userId = userId;
-    next();
-  },
-];
