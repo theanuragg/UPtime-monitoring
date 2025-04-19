@@ -36,7 +36,7 @@ const CTASection = () => {
   return (
     <div id="cta" ref={ctaRef} className="py-24 bg-secondary/50">
       <div className="container max-w-7xl mx-auto px-6">
-        <div className="max-w-4xl mx-auto bg-white rounded-2xl p-12 border border-border shadow-xl">
+        <div className="max-w-4xl mx-auto bg-black rounded-2xl p-12 border border-border shadow-xl">
           <div className="text-center">
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-balance mb-6 reveal">
               Ready to eliminate service downtime?
