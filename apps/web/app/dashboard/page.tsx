@@ -1,156 +1,254 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Plus, RefreshCcw } from "lucide-react";
-import { Button } from "@components/ui/button";
+import React, { useState, useEffect, useCallback } from "react";
+import Link from "next/link";
+import { useAuth } from "@clerk/nextjs";
+import axios from "axios";
+import { TrialButton } from "@components/ui/Trailbutton";
+import { cxyz } from "@/action/user";
+import {
+  ExternalLink,
+  RefreshCwIcon,
+  Activity,
+  ArrowUpCircle,
+} from "lucide-react";
+import SkeletonCard from "@components/SkeletonCard";
 
-import ServiceCard from "@components/ServiceCard";
-import SummaryCard from "@components/SummaryCard";
-// import AddServiceDialog from "@components/AddServiceDialog";
-import { toast } from "sonner";
-import type { ServiceFormValues } from "@components/AddServiceDailog";
-
-// Mock data for the dashboard
-const totalChecksData = [
-  { label: "Down", value: 0 },
-  { label: "Paused", value: 0 },
-  { label: "Maintenance", value: 0 },
-];
-
-const outagesData = [
-  { label: "Last 24h", value: 0 },
-  { label: "Last 7d", value: 0 },
-  { label: "Last 30d", value: 0 },
-];
-
-const responseTimeData = [
-  { label: "HTTP", value: "55ms" },
-  { label: "Transaction", value: "n/a" },
-  { label: "API", value: "n/a" },
-];
-
-const otherData = [
-  { label: "Global Uptime", value: "100%", highlight: true },
-  { label: "Last Alert", value: "n/a" },
-  { label: "RUM Load Time", value: "n/a" },
-];
-
-interface Service {
-  id: number;
-  name: string;
-  type: string;
-  url: string;
+// Types
+interface Tick {
+  id: string;
   status: string;
-  uptime: string;
-  responseTime: {
-    url: string;
-    data: number[];
-  };
+  latency: number;
+  createdAt: string;
 }
 
-const Dashboard = () => {
-  const router = useRouter();
-  const [searchQuery] = useState("");
-  const [serviceData, setServiceData] = useState<Service[]>([
-    {
-      id: 1,
-      name: "portfolio-three-chi.vercel.app",
-      type: "HTTP(S)",
-      url: "https://portfolio-three-chi.vercel.app/",
-      status: "Up for 7h 2m",
-      uptime: "100%",
-      responseTime: {
-        url: "/service/1",
-        data: [10, 20, 15, 35, 25, 40, 30, 25, 20, 15, 10, 20, 30, 25],
-      },
-    },
-  ]);
+interface Website {
+  id: string;
+  url: string;
+  ticks: Tick[];
+  status?: string;
+  uptime?: number;
+}
 
+const App = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [websites, setWebsites] = useState<Website[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [url, setUrl] = useState("");
+  const { userId } = useAuth();
 
+  const loadWebsites = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get<{ websites: Website[] }>(
+        "http://localhost:8000/api/v1/websites",
+        {
+          headers: { clerkId: userId },
+        }
+      );
 
-  const handleAddService = (service: ServiceFormValues) => {
-    const newService = {
-      id: serviceData.length + 1,
-      name: service.name,
-      type: service.type,
-      url: service.url,
-      status: "Up for 0m",
-      uptime: "100%",
-      responseTime: {
-        url: `/service/${serviceData.length + 1}`,
-        data: [10, 15, 20, 15, 10, 15, 20, 25, 20, 15, 10, 15, 20, 15],
-      },
-    };
-    setServiceData([...serviceData, newService]);
-    toast.success(`Service "${service.name}" added successfully`);
-  };
+      const websitesWithTicks = await Promise.all(
+        response.data.websites.map(async (site) => {
+          try {
+            const statusRes = await axios.post<{ website: Website }>(
+              "http://localhost:8000/api/v1/website/status",
+              { id: site.id },
+              {
+                headers: { clerkId: userId },
+              }
+            );
+            return statusRes.data.website;
+          } catch {
+            return null;
+          }
+        })
+      );
 
-  const handleServiceClick = (id: number) => {
-    router.push(`/dashboard/Service/${id}`);
-  };
+      setWebsites(
+        websitesWithTicks.filter((site): site is Website => site !== null)
+      );
+    } catch (error) {
+      console.error("Failed to fetch websites:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [userId]);
 
-  const filteredServices = searchQuery
-    ? serviceData.filter(
-        (service) =>
-          service.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          service.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          service.url.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : serviceData;
+  useEffect(() => {
+    loadWebsites();
+  }, [loadWebsites, userId]);
 
   
-
+  const getFormattedUrl = (url: string) => {
+    return url.startsWith("http") ? url : `https://${url}`;
+  };
   return (
-    <div className="mt-20">
- <div className="items-end flex" >
-  <div className="flex items-center gap-2">
-      <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => toast.success("Refreshing data...")}>
-        <RefreshCcw className="h-4 w-4" />
-      </Button>
-      <Button
-        variant="outline"
-        size="icon"
-        className="h-8 w-8"
-        onClick={() =>
-          handleAddService({
-            name: "New Service",
-            type: "HTTP(S)",
-            url: "https://example.com",
-          })
-        }
-      >
-        <Plus className="h-4 w-4" />
-      </Button>
-      <Button variant="outline" size="icon" className="h-8 w-8">
-        <div className="grid place-items-center">⋮</div>
-      </Button>
-    </div>
-  </div> 
-    <div className="px-8 py-6">
-        {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <SummaryCard title="1 total checks" items={totalChecksData} linkText="View" />
-          <SummaryCard title="Outages" items={outagesData} linkText="View" />
-          <SummaryCard title="Response Time" items={responseTimeData} linkText="View" />
-          <SummaryCard title="Other" items={otherData} linkText="View" />
+    <div className="min-h-screen bg-black transition-colors duration-200">
+      <div className="max-w-4xl mx-auto py-16 px-4">
+        <div className="flex flex-row items-center justify-center mb-8 gap-60">
+          <h1 className="text-3xl custom-heading">Add website</h1>
+          <TrialButton
+            onClick={() => setIsModalOpen(true)}
+            text="Add Website"
+          />
+        </div>
+        <div className="flex justify-end mb-4">
+          <button
+            onClick={async () => {
+              setLoading(true);
+              await loadWebsites();
+              setLoading(false);
+            }}
+            className="px-4 py-2 text-sm font-medium"
+          >
+            <RefreshCwIcon
+              className={`text-white transition-transform ${
+                loading ? "animate-spin" : ""
+              }`}
+            />
+          </button>
         </div>
 
-        {/* Service Checks */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {filteredServices.length > 0 ? (
-            filteredServices.map((service) => (
-              <ServiceCard key={service.id} service={service} onClick={() => handleServiceClick(service.id)} />
-            ))
+        <ul className="space-y-10">
+          {loading ? (
+            <SkeletonCard count={4} />
           ) : (
-            <div className="col-span-3 text-center p-8 border rounded-lg">
-              No services found matching &quot;{searchQuery}&quot;
-            </div>
+            websites.map((website) => (
+              <Link
+                href={`/dashboard/Service/${website.id}`}
+                key={website.id}
+                className="block w-full"
+              >
+                <div className="cursor-pointer p-6 rounded-2xl transition bg-secondary border border-gray-700/30 relative overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 hover:shadow-lg hover:shadow-blue-500/10 group">
+                  {/* Subtle glow effects */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-blue-500/5 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute -top-20 -left-20 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-purple-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                  <div className="relative z-10">
+                    {/* Header section */}
+                    <div className="flex items-center gap-3 mb-4">
+                      <span
+                        className={`w-3 h-3 rounded-full ${website.status === "up" ? "bg-green-500" : "bg-red-500"} animate-pulse shadow-sm ${website.status === "up" ? "shadow-green-500/30" : "shadow-red-500/30"}`}
+                      />
+
+                      {/* URL + External Link */}
+                      <h3 className="text-lg font-semibold flex items-center gap-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">
+                        {website.url}
+                        <a
+                          href={getFormattedUrl(website.url)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="text-gray-400 hover:text-blue-400 transition-colors duration-300"
+                        >
+                          <ExternalLink size={16} />
+                        </a>
+                      </h3>
+                    </div>
+
+                    {/* Stats Grid */}
+                    <div className="grid grid-cols-2 gap-3 mt-10">
+                      {/* Status */}
+                      <div className="flex items-center justify-between p-3 bg-gradient-to-r from-gray-800/70 to-gray-700/40 rounded-xl border border-gray-700/30 shadow-sm">
+                        <div className="flex items-center gap-2">
+                          <Activity size={16} className="text-gray-400" />
+                          <span className="text-sm text-gray-400">Status</span>
+                        </div>
+                        <div
+                          className={`px-2 py-1 rounded-xl ${
+                            website.status === "up"
+                              ? "bg-green-500/10 text-green-400"
+                              : "bg-red-500/10 text-red-400"
+                          }`}
+                        >
+                          <span className="font-medium text-sm">
+                            {website.status === "up" ? "Up" : "Down"}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Uptime */}
+                      <div className="flex items-center justify-between p-3 bg-gradient-to-r from-gray-800/70 to-gray-700/40 rounded-xl border border-gray-700/30 shadow-sm">
+                        <div className="flex items-center gap-2">
+                          <ArrowUpCircle size={16} className="text-gray-400" />
+                          <span className="text-sm text-gray-400">Uptime</span>
+                        </div>
+                        <div
+                          className={`px-2 py-1 rounded-xl ${
+                            (website.uptime ?? 96) > 95
+                              ? "bg-green-500/10 text-green-400"
+                              : "bg-yellow-500/10 text-yellow-400"
+                          }`}
+                        >
+                          <span className="font-medium text-sm">
+                            {(website.uptime ?? 96).toFixed(2)}%
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))
           )}
-        </div>
+        </ul>
       </div>
+
+      {/* Modal Inline */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-[#1f2937] rounded-xl p-6 w-full max-w-md shadow-xl border border-gray-700">
+            <h2 className="text-2xl  mb-4 text-white font-thin text-center">
+              Add New Website
+            </h2>
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-2">
+                URL
+              </label>
+              <input
+                type="url"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                placeholder="https://example.com"
+                className="w-full px-3 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white "
+              />
+              <div className="flex justify-end mt-6 space-x-3">
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-2 bg-gray-600 text-slate-200 rounded-xl transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={async () => {
+                    if (!url) return;
+                    try {
+                      await axios.post(
+                        "http://localhost:8000/api/v1/website/create",
+                        { url },
+                        {
+                          headers: { clerkId: userId },
+                        }
+                      );
+                      setUrl("");
+                      setIsModalOpen(false);
+                      await loadWebsites();
+                    } catch (err) {
+                      console.error("Error adding website:", err);
+                    }
+                  }}
+                  className="px-4 py-2 bg-primary text-black font-semibold rounded-xl transition"
+                >
+                  Yes, Add Website
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default Dashboard;
+export default App;
