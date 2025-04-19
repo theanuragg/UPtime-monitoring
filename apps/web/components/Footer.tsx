@@ -1,21 +1,23 @@
-
 "use client";
 
 import { Activity, Github, Twitter, Linkedin } from "lucide-react";
+import Link from "next/link";
 
 const Footer = () => {
   return (
-    <footer className="bg-black  py-12 text-white">
+    <footer className="bg-black py-12 text-white">
       <div className="container max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-12">
           <div className="md:col-span-2">
-            <a
-              href="#"
+            <Link
+              href="/"
               className="flex items-center gap-2 text-primary font-medium mb-4"
             >
               <Activity className="w-5 h-5" />
-              <span className="text-lg font-semibold">UptimeGlance</span>
-            </a>
+              <span className="text-lg font-semibold text-primary">
+                Dpin uptime
+              </span>
+            </Link>
             <p className="mb-6 max-w-md text-white">
               Real-time monitoring for all your critical services. Get notified
               immediately when something goes wrong.
@@ -34,20 +36,20 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className=" border-border mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm text-white">
-            © {new Date().getFullYear()} UptimeGlance. All rights reserved.
+        <div className="border-t border-border mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+          <p className="text-sm text-white text-center md:text-left">
+            © {new Date().getFullYear()} Dpin uptime. All rights reserved.
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <a href="#" className="text-sm text-white hover:text-gray-300">
+            <Link href="/" className="text-sm text-white hover:text-gray-300">
               Privacy Policy
-            </a>
-            <a href="#" className="text-sm text-white hover:text-gray-300">
+            </Link>
+            <Link href="/" className="text-sm text-white hover:text-gray-300">
               Terms of Service
-            </a>
-            <a href="#" className="text-sm text-white hover:text-gray-300">
+            </Link>
+            <Link href="/" className="text-sm text-white hover:text-gray-300">
               Cookie Policy
-            </a>
+            </Link>
           </div>
         </div>
       </div>
