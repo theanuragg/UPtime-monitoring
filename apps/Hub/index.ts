@@ -79,7 +79,6 @@ async function signupHandler(
     return;
   }
 
-  //TODO: Given the ip, return the location
   const validator = await prisma.validator.create({
     data: {
       ip,
@@ -172,10 +171,10 @@ setInterval(async () => {
                   where: { id: validatorId },
                   data: {
                     pendingPayout: { increment: COST_PER_VALIDATION },
+                    lastEmailSentAt: new Date(),
                   },
                 });
 
-                
                 if (status.toLowerCase() === "bad") {
                   const user = await tx.user.findUnique({
                     where: { id: website.userId },
@@ -184,20 +183,39 @@ setInterval(async () => {
 
                   const validatorObj = await tx.validator.findUnique({
                     where: { id: validatorId },
-                    select: { location: true },
+                    select: { location: true, lastEmailSentAt: true },
                   });
 
-                  if (user?.email && validatorObj?.location) {
+                  const now = new Date();
+
+                  const shouldSendEmail =
+                    !validatorObj?.lastEmailSentAt ||
+                    now.getTime() -
+                      new Date(validatorObj.lastEmailSentAt).getTime() >
+                      60 * 60 * 1000;
+
+                  if (
+                    user?.email &&
+                    validatorObj?.location &&
+                    shouldSendEmail
+                  ) {
                     await sendFailureMail(
                       user.email,
                       website.url,
                       validatorObj.location
                     );
+
+                    await tx.validator.update({
+                      where: { id: validatorId },
+                      data: {
+                        lastEmailSentAt: now,
+                      },
+                    });
                   }
                 }
               },
               {
-                timeout: 10000, 
+                timeout: 10000,
               }
             )
             .catch((err) => {
