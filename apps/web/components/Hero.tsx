@@ -2,15 +2,14 @@
 
 import { useEffect, useRef } from "react";
 import { TrialButton } from "@components/ui/Trailbutton";
-import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-
+import { useUser, SignInButton } from "@clerk/nextjs";
 
 const Hero = () => {
   const heroRef = useRef<HTMLDivElement>(null);
- 
-    const { isSignedIn } = useUser();
-    const router = useRouter();
+
+  const { isSignedIn } = useUser();
+  const router = useRouter();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -37,6 +36,16 @@ const Hero = () => {
       }
     };
   }, []);
+  if (isSignedIn) {
+    return (
+      <TrialButton
+        text="Get Started"
+        onClick={() => {
+          router.push("/dashboard");
+        }}
+      />
+    );
+  }
 
   return (
     <main className="relative min-h-screen flex items-center justify-center bg-black text-white overflow-hidden">
@@ -49,10 +58,10 @@ const Hero = () => {
         {/* Second Line in flex-row */}
         <div className="flex justify-center items-center flex-wrap gap-2 mt-2 sm:mt-4 text-3xl sm:text-6xl">
           <h1 className="font-semibold select-text custom-heading reveal">
-        Down before your
+            Down before your
           </h1>
           <span className="text-primary font-main font-normal custom-heading2 reveal select-text">
-        users
+            users
           </span>
         </div>
 
@@ -62,18 +71,9 @@ const Hero = () => {
           smarter business choices.
         </p>
 
-        <TrialButton
-          text="Get Started"
-          onClick={() => {
-
-          if (isSignedIn) {
-            router.push("/dashboard");
-          } else {
-            
-          }
-          }
-          }
-        />
+        <SignInButton mode="modal">
+          <TrialButton text="Get Started" onClick={() => {}} />
+        </SignInButton>
       </div>
     </main>
   );
