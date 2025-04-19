@@ -9,8 +9,13 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-export default function LineChartComponent({ ticks }: { ticks: any[] }) {
-  // Convert tick data to format usable by recharts
+interface Tick {
+  createdAt: string;
+  latency: number;
+}
+
+export default function LineChartComponent({ ticks }: { ticks: Tick[] }) {
+  
   const data = ticks.map((tick) => ({
     time: new Date(tick.createdAt).toLocaleTimeString(),
     latency: tick.latency,

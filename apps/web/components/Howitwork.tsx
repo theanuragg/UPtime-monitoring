@@ -7,10 +7,10 @@ export default function HowItWorks() {
   return (
     <section className="bg-black text-white py-40 px-6">
       <div className="text-center max-w-4xl mx-auto">
-        <p className="text-lg text-primary uppercase mb-3">How it works</p>
-        <h2 className="text-4xl font-serif">
+        <p className="text-lg text-primary uppercase  mb-3">How it works</p>
+        <h2 className="text-4xl custom-heading font-serif">
           We make data accessible and <br />
-          <span className="text-secondary">
+          <span className="text-secondary text-3xl">
             actionable for teams of all sizes.
           </span>
         </h2>
@@ -22,11 +22,10 @@ export default function HowItWorks() {
           {/* Card 1 */}
           <div className="bg-[#141414] p-6 rounded-xl border border-zinc-800 shadow-lg flex flex-col gap-6">
             <p className="text-white font-sans text-lg leading-relaxed">
-              <span className="font-semibold">
-                No complex setup or technical expertise required.
+              <span className="font-semibold ">
+              Simple and quick setup.
               </span>{" "}
-              Sign up, connect your data, and start discovering valuable
-              insights right away.
+              Sign up for an account and log in to get started with monitoring your website&#39;s uptime.
             </p>
 
             <div className="flex flex-col gap-6 pt-10">
@@ -44,10 +43,9 @@ export default function HowItWorks() {
           <div className="bg-[#141414] p-6 rounded-xl border border-zinc-800 shadow-lg">
             <p className="text-white font-sans text-lg leading-relaxed mb-4">
               <span className="font-main">
-                Create it, until you make it.
+              Add your website URL.
               </span>{" "}
-              Shape Feature to match what you actually need and how your brand
-              looks.
+              Enter the URL of the website you want to monitor, and our system will start tracking its uptime.
             </p>
             <div className="relative mt-8 overflow-hidden rounded-xl h-[260px] md:h-[300px]">
               <Image
@@ -71,24 +69,23 @@ export default function HowItWorks() {
           <div className="bg-[#141414] p-6 rounded-xl border border-zinc-800 shadow-lg flex flex-col gap-4">
             <p className="text-white font-medium text-lg leading-relaxed">
               <span className="font-semibold">
-                Reach a product expert in minutes, not a chatbot.
+              Real-time latency and uptime graphs.
               </span>{" "}
-              3-minute average response time with solutions on the first
-              contact.
+              Our validator sends latency data and displays it in real-time graphs for easy monitoring..
             </p>
 
             <div className="bg-zinc-800 p-4 rounded-2xl text-sm space-y-3 mt-4">
               <div className="bg-background px-3 py-2 rounded-xl text-white">
-                Hi team, could you please help me connecting my domain?
+              How can I view my website&#39;s latency graph?
               </div>
-              <div className="bg-background px-3 py-2 rounded-xl text-white flex items-center justify-between">
+              <div className="bg-background px-3 py-2 rounded-xl text-white/70 flex items-center justify-between">
                 <span>
-                  Sure thing! Please send us your ID so we can look into it.
+                Simply navigate to the dashboard to see real-time latency and uptime data.
                 </span>
 
               </div>
-              <div className="bg-background px-3 py-2 rounded-xl text-white ">
-                My user ID is: 12345678
+              <div className="bg-background px-3 py-2 rounded-xl text-white/55 ">
+              Thank you! This is very helpful.
               </div>
             </div>
           </div>

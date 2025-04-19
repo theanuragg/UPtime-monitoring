@@ -1,96 +1,78 @@
-"use client"
+'use client';
 
-import { useRef, useEffect } from "react";
-import { Star } from "lucide-react";
-
-const testimonials = [
-  {
-    content: "UptimeGlance has transformed how we monitor our infrastructure. The notifications are instant, and the interface is extremely intuitive.",
-    author: "Sarah Johnson",
-    role: "CTO, TechFusion",
-    rating: 5,
-  },
-  {
-    content: "We reduced our downtime by 90% since implementing UptimeGlance. The detailed analytics help us identify potential issues before they become problems.",
-    author: "Michael Chen",
-    role: "DevOps Lead, Quantum Media",
-    rating: 5,
-  },
-  {
-    content: "Moving from our old monitoring solution to UptimeGlance was seamless. Their support team was exceptional during the transition.",
-    author: "Jessica Williams",
-    role: "Infrastructure Manager, DataFlow",
-    rating: 5,
-  },
-];
-
-const TestimonialSection = () => {
-  const testimonialRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("active");
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    const testimonialElement = testimonialRef.current;
-    if (testimonialElement) {
-      const revealElements = testimonialElement.querySelectorAll(".reveal");
-      revealElements.forEach((el) => observer.observe(el));
-    }
-
-    return () => {
-      if (testimonialElement) {
-        const revealElements = testimonialElement.querySelectorAll(".reveal");
-        revealElements.forEach((el) => observer.unobserve(el));
-      }
-    };
-  }, []);
+export default function Testimonials() {
+  const reviews = [
+    {
+      name: "David R.",
+      role: "Tech Startup Founder",
+      review:
+        "We've scaled from 5 to 50 employees using this software. The automation capabilities have eliminated so much busywork, letting us focus on growth. Their regular feature updates show they're committed to improvement.",
+    },
+    {
+      name: "Rebecca H.",
+      role: "Freelance Consultant",
+      review:
+        "The client portal is a game-changer. Only wish the pricing was more flexible for individual users.",
+    },
+    {
+      name: "Carlos M.",
+      role: "E-commerce Director",
+      review:
+        "Good platform with some growing pains. The analytics are excellent, but we've experienced occasional downtime during peak seasons. Their roadmap looks promising though.",
+    },
+    {
+      name: "Akash P.",
+      role: "Enterprise IT Manager",
+      review:
+        "Solid functionality and security features. Integration was more challenging than promised, but once set up, it performs well. Would appreciate more customization options.",
+    },
+    {
+      name: "Thomas W.",
+      role: "CEO",
+      review:
+        "We've identified inefficiencies we never knew existed. Implementation was smooth, and the training resources are comprehensive.",
+    },
+    {
+      name: "Emma T.",
+      role: "HR Director",
+      review:
+        "Finally, software that employees actually want to use! The onboarding workflow automation has reduced our paperwork by 70%. The interface is intuitive enough that even our least tech-savvy team members adapted quickly.",
+    },
+  ];
 
   return (
-    <div id="testimonials" ref={testimonialRef} className="py-24">
-      <div className="container max-w-7xl mx-auto px-6">
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center space-x-2 rounded-full bg-primary/10 px-3 py-1 text-sm text-primary mb-4 reveal">
-            <span>What Our Customers Say</span>
-          </div>
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-balance mb-6 reveal stagger-1">
-            Trusted by thousands of companies worldwide
-          </h2>
-          <p className="text-xl text-muted-foreground reveal stagger-2">
-            See what our customers have to say about their experience with UptimeGlance.
-          </p>
-        </div>
+    <div className="min-h-screen bg-black px-6 py-12">
+      <div className="max-w-6xl mx-auto">
+        <h2 className="text-white text-4xl font-bold mb-2">Reviews that</h2>
+        <h3 className="text-yellow-400 text-4xl font-bold mb-10">make us blush</h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {testimonials.map((testimonial, index) => (
+        <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          {reviews.map((r, i) => (
             <div
-              key={index}
-              className="reveal bg-white rounded-xl p-6 border border-border transition-all duration-300 hover:shadow-lg flex flex-col"
-              style={{ transitionDelay: `${0.1 * (index + 1)}s` }}
+              key={i}
+              className="bg-zinc-900 p-5 rounded-lg shadow-md text-white flex flex-col gap-4 max-w-md"
             >
-              <div className="flex mb-4">
-                {Array.from({ length: testimonial.rating }).map((_, i) => (
-                  <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                ))}
-              </div>
-              <p className="text-lg mb-4 flex-grow">{testimonial.content}</p>
-              <div>
-                <p className="font-semibold">{testimonial.author}</p>
-                <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+              <div className="text-yellow-400 text-xl">★★★★★</div>
+              <p className="text-sm text-zinc-300">{r.review}</p>
+              <div className="flex items-center gap-3 mt-auto">
+                <div className="w-8 h-8 bg-yellow-400 text-black flex items-center justify-center font-bold rounded-full">
+                  {r.name.charAt(0)}
+                </div>
+                <div>
+                  <p className="font-semibold">{r.name}</p>
+                  <p className="text-xs text-zinc-400">{r.role}</p>
+                </div>
               </div>
             </div>
           ))}
         </div>
+
+        <div className="mt-12 flex justify-end">
+          <button className="bg-yellow-400 hover:bg-yellow-500 text-black px-6 py-3 rounded-full font-semibold flex items-center gap-2">
+            Leave a review →
+          </button>
+        </div>
       </div>
     </div>
   );
-};
-
-export default TestimonialSection;
+}

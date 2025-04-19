@@ -2,57 +2,51 @@
 
 import { useState } from 'react';
 
-interface FAQ {
-  question: string;
-  answer: string;
-}
-
-const faqs: FAQ[] = [
+const faqs = [
   {
-    question: 'How long does it take to get started with Feature?',
-    answer: 'It usually takes just a few minutes to get started.',
+    question: 'How do I get started with Uptime Monitor?',
+    answer: 'Simply sign up, log in, and start adding the links to the websites you want to monitor.',
   },
   {
-    question: 'Can I make Feature work the way my business operates?',
-    answer: 'Yes, it’s highly customizable to fit different business models.',
+    question: 'What happens if my website goes down?',
+    answer: 'We will immediately notify you via email or other configured notification methods.',
   },
   {
-    question: 'What if I need help?',
-    answer: 'Our support team is always ready to help via chat or email.',
+    question: 'Can I monitor multiple websites?',
+    answer: 'Yes, you can add and monitor multiple websites from your dashboard.',
   },
   {
-    question: 'How do you keep my data safe?',
-    answer: 'We use industry-standard encryption and security practices.',
+    question: 'How often do you check the status of my websites?',
+    answer: 'We perform regular checks at intervals to ensure your websites are up and running.',
   },
   {
-    question: 'Do I need to be tech-savvy to use Feature?',
-    answer: 'No, Feature is built for everyone – simple and intuitive.',
+    question: 'Is my data secure?',
+    answer: 'Yes, we use industry-standard encryption and security practices to keep your data safe.',
   },
   {
-    question: 'How often do you improve the product?',
-    answer: 'We push updates and improvements weekly.',
+    question: 'Can I customize the notification settings?',
+    answer: 'Yes, you can configure how and when you want to be notified about downtime.',
   },
   {
-    question: 'Can I try before I buy?',
-    answer: 'Yes, we offer a free trial so you can explore before buying.',
+    question: 'Do you offer a free trial?',
+    answer: 'Yes, we offer a free trial so you can explore the features before subscribing.',
   },
 ];
 
 export default function FaqSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-
-  const toggleFAQ = (index: number): void => {
+  const toggleFAQ = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
   return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center py-20 px-4">
       <div className="max-w-2xl w-full">
-        <h2 className="text-3xl font-bold mb-2 text-center">Any questions?</h2>
-        <p className="text-center text-secondary mb-8">
+        <h2 className="text-3xl font-bold custom-heading mb-2 text-center">Any questions?</h2>
+        <p className="text-center text-gray-400 mb-8">
           See the info below or drop me a line via the{' '}
-          <span className="font-semibold text-white">support</span> page.
+          <span className="font-semibold underline">support</span> page.
         </p>
 
         <div className="space-y-4">
@@ -65,7 +59,7 @@ export default function FaqSection() {
                 onClick={() => toggleFAQ(index)}
                 className="w-full flex justify-between items-center px-5 py-4 text-left focus:outline-none"
               >
-                <span className="font-medium text-xl">{faq.question}</span>
+                <span className="font-sans">{faq.question}</span>
                 <svg
                   className={`w-5 h-5 text-white transform transition-transform duration-300 ease-in-out delay-100 ${
                     openIndex === index ? 'rotate-180' : ''
@@ -79,7 +73,7 @@ export default function FaqSection() {
                 </svg>
               </button>
               {openIndex === index && (
-                <div className="px-5 pb-4 text-secondary transition-opacity duration-300 ease-in-out">
+                <div className="px-5 pb-4 text-gray-400 transition-opacity duration-300 ease-in-out">
                   {faq.answer}
                 </div>
               )}
