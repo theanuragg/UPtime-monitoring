@@ -8,23 +8,25 @@ export async function authMiddleware(
 ) {
   const clerkId = req.headers.clerkid as string | undefined;
   if (!clerkId) {
-    return res.status(401).json({ error: "Unauthorized" });
+    res.status(401).json({ error: "Unauthorized" });
+    return;
   }
 
- 
   let email = "";
   try {
     const clerkUser = await clerkClient.users.getUser(clerkId);
     email = clerkUser.emailAddresses[0]?.emailAddress || "";
   } catch (err) {
     console.error("Error fetching user from Clerk:", err);
-    return res.status(401).json({ error: "Failed to verify Clerk user" });
+    res.status(401).json({ error: "Failed to verify Clerk user" });
+    return;
   }
 
   if (!email) {
-    return res.status(401).json({ error: "No email found for user" });
+    res.status(401).json({ error: "No email found for user" });
+    return;
   }
-   
+
   let user = await prisma.user.findUnique({
     where: {
       clerk: clerkId,
@@ -39,8 +41,6 @@ export async function authMiddleware(
       },
     });
   }
-
   req.userId = user.id;
   next();
 }
-
