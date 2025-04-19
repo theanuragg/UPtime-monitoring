@@ -6,6 +6,7 @@ import { useAuth } from "@clerk/nextjs";
 import axios from "axios";
 import { TrialButton } from "@components/ui/Trailbutton";
 import { cxyz } from "@/action/user";
+
 import {
   ExternalLink,
   RefreshCwIcon,
@@ -13,6 +14,7 @@ import {
   ArrowUpCircle,
 } from "lucide-react";
 import SkeletonCard from "@components/SkeletonCard";
+import { toast } from "sonner";
 
 // Types
 interface Tick {
@@ -73,6 +75,7 @@ const App = () => {
       setLoading(false);
     }
   }, [userId]);
+  
 
   useEffect(() => {
     loadWebsites();
@@ -148,7 +151,7 @@ const App = () => {
                     </div>
 
                     {/* Stats Grid */}
-                    <div className="grid grid-cols-2 gap-3 mt-10">
+                    <div className="grid grid-cols-2 gap-3 mt-20">
                       {/* Status */}
                       <div className="flex items-center justify-between p-3 bg-gradient-to-r from-gray-800/70 to-gray-700/40 rounded-xl border border-gray-700/30 shadow-sm">
                         <div className="flex items-center gap-2">
@@ -221,25 +224,18 @@ const App = () => {
                   Cancel
                 </button>
                 <button
-                  onClick={async () => {
-                    if (!url) return;
-                    try {
-                      await axios.post(
-                        "http://localhost:8000/api/v1/website/create",
-                        { url },
-                        {
-                          headers: { clerkId: userId },
-                        }
-                      );
-                      setUrl("");
-                      setIsModalOpen(false);
-                      await loadWebsites();
-                    } catch (err) {
-                      console.error("Error adding website:", err);
-                    }
-                  }}
-                  className="px-4 py-2 bg-primary text-black font-semibold rounded-xl transition"
-                >
+                
+                   onClick={async () => {
+                     if (url.trim()) {
+                       await cxyz(url);
+                     }
+                   }}
+                   disabled={!url.trim()}
+                   className={` w-full py-2 px-4 rounded-xl transition duration-300 ${
+                     url.trim() ? "bg-blue-600 hover:bg-blue-700 text-white" : "bg-gray-600 text-gray-300 cursor-not-allowed"
+                   }`}
+                >{loading ? <SkeletonCard count={2}/> : toast.loading("Added")}
+
                   Yes, Add Website
                 </button>
               </div>
