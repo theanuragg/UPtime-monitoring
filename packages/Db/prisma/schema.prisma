@@ -19,6 +19,7 @@ model Website {
   userId   String
   disabled Boolean        @default(false) 
   ticks    Website_tick[]
+  
 }
 
 model Validator {
@@ -28,6 +29,7 @@ model Validator {
   ip        String
   pendingPayout Int   @default(0)
   ticks     Website_tick[]
+  lastEmailSentAt   DateTime? 
 }
 
 model Website_tick {
@@ -40,6 +42,20 @@ model Website_tick {
   Validator   Validator     @relation(fields: [validatorId], references: [id])
   website     Website       @relation(fields: [websiteId], references: [id])
 }
+
+model SEOReport {
+  id              String   @id @default(uuid())
+  url             String
+  title           String?
+  description     String?
+  h1s             String[] @default([])
+  robotsTxt       String?
+  sitemapXml      String?
+  brokenLinks     String[] @default([])
+  imagesWithoutAlt String[] @default([])
+  createdAt       DateTime @default(now())
+}
+
 
 enum websitestatus {
   good
