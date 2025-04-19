@@ -17,7 +17,7 @@ let validatorId: string | null = null;
 async function main() {
   const seed = Uint8Array.from(JSON.parse(process.env.PRIVATE_KEY!));
   const keypair = Keypair.fromSeed(seed);
-  const ws = new WebSocket("ws://localhost:8081");
+  const ws = new WebSocket(process.env.WS_SERVER_URL!);
 
   ws.onmessage = async (event) => {
     const data: OutgoingMessage = JSON.parse(event.data);
