@@ -1,20 +1,20 @@
-'use client'
+"use client";
 
 import { useEffect } from "react";
-import Navbar from "@components/Appbar";
+
 import Hero from "@components/Hero";
-import Features from "@components/Features";
-import TestimonialSection from "@components/TestimonialSection";
-import PricingSection from "@components/PricingSection";
-import StatSection from "@components/StatSection";
-import CTASection from "@components/CTAsection";
+
 import Footer from "@components/Footer";
 import { Toaster } from "@components/ui/toaster";
-
+import Dashboard from "@components/dashboard";
+import HowItWorks from "@components/Howitwork";
+import FeatureSection from "@components/Features";
+import Analytics from "../components/featurecard2";
+import FaqSection from "@components/FAQ";
 
 const Page = () => {
   useEffect(() => {
-    // Intersection Observer for reveal animations
+   
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -26,7 +26,7 @@ const Page = () => {
       { threshold: 0.1 }
     );
 
-    // Observe all elements with the reveal class
+    
     document.querySelectorAll(".reveal").forEach((el) => {
       observer.observe(el);
     });
@@ -41,14 +41,13 @@ const Page = () => {
 
   return (
     <div className="min-h-screen bg-background antialiased">
-      <Navbar />
       <main>
         <Hero />
-        <Features />
-        <StatSection />
-        <TestimonialSection />
-        <PricingSection />
-        <CTASection />
+        <Dashboard />
+        <HowItWorks />
+        <FeatureSection />
+        <Analytics />
+        <FaqSection />
       </main>
       <Footer />
       <Toaster />
