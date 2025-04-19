@@ -29,19 +29,37 @@ body{
   background: linear-gradient(to top, #6b7280, #ffffff); /* Gray bottom to white top */
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-clip: text; /* For Firefox */
-  color: transparent;    /* Fallback */
+  background-clip: text; 
+  color: transparent;   
   
 }
 .custom-heading2 {
   font-family: "Instrument Serif", "Instrument Serif Fallback", serif;
   font-style: italic;
   font-weight: 500;
-  color: #FFDF7D; /* Warm yellow - highlights */
+  color: #FFDF7D; 
   font-size: 60px;
   line-height: 60px;
   
 }
+.custom-span {
+  font-family: "Inter", "Inter Fallback", sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  color: rgb(255, 255, 255); 
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.custom-heading3 {
+  font-family: "Inter Display", "Inter Display Placeholder", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  color: rgb(231, 226, 226);
+  font-size: 44px;
+  line-height: 52px;
+}
+
 
 /* ===== Custom Utility Classes ===== */
 @layer utilities {
