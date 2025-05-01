@@ -8,7 +8,7 @@ export async function fetchUserWebsites() {
     const user = await currentUser();
     if (!user?.id) throw new Error("User not authenticated");
 
-    const response = await axios.get(`http://localhost:8000/api/v1/websites`, {
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}api/v1/websites`, {
       headers: {
         clerkId: user.id,
       },

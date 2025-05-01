@@ -9,10 +9,10 @@ export async function cxyz(url: string) {
     if (!user?.id) throw new Error("User not authenticated");
 
     await axios.post(
-      `http://localhost:8000/api/v1/website`,
+      `${process.env.NEXT_PUBLIC_API_URL}/api/v1/website`,
       { url },
       {
-        headers: { clerkId: user.id },
+      headers: { clerkId: user.id },
       }
     );
 
