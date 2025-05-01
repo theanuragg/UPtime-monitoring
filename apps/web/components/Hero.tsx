@@ -72,7 +72,7 @@ const Hero = () => {
         </p>
 
         <SignInButton mode="modal">
-          <TrialButton text="Get Started" onClick={() => {}} />
+          <TrialButton text="Get Started"/>
         </SignInButton>
       </div>
     </main>

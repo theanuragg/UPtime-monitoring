@@ -20,7 +20,7 @@ export default function FeatureSection() {
                 src="/tools2.jpg"
                 alt="Feature Dashboard"
                 fill
-                className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
+                className="object-cover transition-transform d"
               />
             </div>
           </div>
