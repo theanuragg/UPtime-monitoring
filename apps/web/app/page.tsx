@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 
 import Hero from "@components/Hero";
-
 import Footer from "@components/Footer";
 import { Toaster } from "@components/ui/toaster";
 import Dashboard from "@components/dashboard";
