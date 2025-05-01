@@ -1,4 +1,4 @@
-import type { Request, Response, NextFunction } from "express";
+import type { Request, Response } from "express";
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 import { prisma } from "db/client";
@@ -6,8 +6,15 @@ import { getTextFile } from '../utils/filetet';
 
 export const crawlWebsite = async (req: Request, res: Response) => {
   const { url } = req.body;
-  console.log("BODY:", req.body); //  log this to check structure
+  const userId = req.userId;
 
+  if (!userId) {
+    return res.status(401).json({ message: "Unauthorized", success: false });
+  }
+
+  if (!url) {
+    return res.status(400).json({ message: "URL is required", success: false });
+  }
 
   try {
     const { data } = await axios.get(url);
@@ -48,7 +55,7 @@ export const crawlWebsite = async (req: Request, res: Response) => {
 
     const result = await prisma.sEOReport.create({
       data: {
-        url,
+        url, 
         title,
         description,
         h1s,
@@ -59,10 +66,14 @@ export const crawlWebsite = async (req: Request, res: Response) => {
       }
     });
 
-    res.json(result);
+    res.status(201).json({
+      message: "SEO report created",
+      success: true,
+      data: result,
+    });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Something went wrong' });
+    res.status(500).json({ error: 'Something went wrong', success: false });
   }
 };
 
