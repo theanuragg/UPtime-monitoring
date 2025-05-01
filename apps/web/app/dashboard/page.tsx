@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import SkeletonCard from "@components/SkeletonCard";
 import { toast } from "sonner";
+import { redirect } from "next/navigation";
 
 // Types
 interface Tick {
@@ -36,14 +37,18 @@ const App = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [websites, setWebsites] = useState<Website[]>([]);
   const [loading, setLoading] = useState(true);
+  const [addingWebsite, setAddingWebsite] = useState(false);
   const [url, setUrl] = useState("");
   const { userId } = useAuth();
 
   const loadWebsites = useCallback(async () => {
     setLoading(true);
     try {
+      if (!userId){
+        redirect("/");
+      };
       const response = await axios.get<{ websites: Website[] }>(
-        "http://localhost:8000/api/v1/websites",
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/websites`,
         {
           headers: { clerkId: userId },
         }
@@ -53,7 +58,7 @@ const App = () => {
         response.data.websites.map(async (site) => {
           try {
             const statusRes = await axios.post<{ website: Website }>(
-              "http://localhost:8000/api/v1/website/status",
+           `${process.env.NEXT_PUBLIC_API_URL}/api/v1/website/status`,
               { id: site.id },
               {
                 headers: { clerkId: userId },
@@ -71,20 +76,46 @@ const App = () => {
       );
     } catch (error) {
       console.error("Failed to fetch websites:", error);
+      toast.error("Failed to load websites");
     } finally {
       setLoading(false);
     }
   }, [userId]);
   
-
   useEffect(() => {
     loadWebsites();
   }, [loadWebsites, userId]);
 
+  const handleAddWebsite = async () => {
+    if (!url.trim()) return;
+
+    setAddingWebsite(true);
+    
+    try {
+      const toastId = toast.loading("Adding website...");
+      await cxyz(url);
+      toast.success("Website added successfully", { id: toastId });
+      setUrl("");
+      setIsModalOpen(false);
+      loadWebsites(); 
+    } catch (error) {
+      console.error("Failed to add website:", error);
+      toast.error("Failed to add website");
+    } finally {
+      setAddingWebsite(false);
+    }
+  };
   
   const getFormattedUrl = (url: string) => {
     return url.startsWith("http") ? url : `https://${url}`;
   };
+
+  const handleRefresh = async () => {
+    const toastId = toast.loading("Refreshing websites...");
+    await loadWebsites();
+    toast.success("Websites refreshed", { id: toastId });
+  };
+
   return (
     <div className="min-h-screen bg-black transition-colors duration-200">
       <div className="max-w-4xl mx-auto py-16 px-4">
@@ -97,11 +128,8 @@ const App = () => {
         </div>
         <div className="flex justify-end mb-4">
           <button
-            onClick={async () => {
-              setLoading(true);
-              await loadWebsites();
-              setLoading(false);
-            }}
+            onClick={handleRefresh}
+            disabled={loading}
             className="px-4 py-2 text-sm font-medium"
           >
             <RefreshCwIcon
@@ -138,15 +166,15 @@ const App = () => {
                       {/* URL + External Link */}
                       <h3 className="text-lg font-semibold flex items-center gap-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">
                         {website.url}
-                        <a
-                          href={getFormattedUrl(website.url)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          className="text-gray-400 hover:text-blue-400 transition-colors duration-300"
+                        <span
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            window.open(getFormattedUrl(website.url), "_blank", "noopener,noreferrer");
+                          }}
+                          className="text-gray-400 hover:text-blue-400 transition-colors duration-300 cursor-pointer"
                         >
                           <ExternalLink size={16} />
-                        </a>
+                        </span>
                       </h3>
                     </div>
 
@@ -202,7 +230,7 @@ const App = () => {
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-[#1f2937] rounded-xl p-6 w-full max-w-md shadow-xl border border-gray-700">
-            <h2 className="text-2xl  mb-4 text-white font-thin text-center">
+            <h2 className="text-2xl mb-4 text-white font-thin text-center">
               Add New Website
             </h2>
             <div>
@@ -214,29 +242,26 @@ const App = () => {
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder="https://example.com"
-                className="w-full px-3 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white "
+                className="w-full px-3 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white"
               />
               <div className="flex justify-end mt-6 space-x-3">
                 <button
                   onClick={() => setIsModalOpen(false)}
                   className="px-4 py-2 bg-gray-600 text-slate-200 rounded-xl transition"
+                  disabled={addingWebsite}
                 >
                   Cancel
                 </button>
                 <button
-                
-                   onClick={async () => {
-                     if (url.trim()) {
-                       await cxyz(url);
-                     }
-                   }}
-                   disabled={!url.trim()}
-                   className={` w-full py-2 px-4 rounded-xl transition duration-300 ${
-                     url.trim() ? "bg-blue-600 hover:bg-blue-700 text-white" : "bg-gray-600 text-gray-300 cursor-not-allowed"
-                   }`}
-                >{loading ? <SkeletonCard count={2}/> : toast.loading("Added")}
-
-                  Yes, Add Website
+                  onClick={handleAddWebsite}
+                  disabled={!url.trim() || addingWebsite}
+                  className={`w-full py-2 px-4 rounded-xl transition duration-300 ${
+                    url.trim() && !addingWebsite
+                      ? "bg-blue-600 hover:bg-blue-700 text-white"
+                      : "bg-gray-600 text-gray-300 cursor-not-allowed"
+                  }`}
+                >
+                  {addingWebsite ? "Adding..." : "Add Website"}
                 </button>
               </div>
             </div>
