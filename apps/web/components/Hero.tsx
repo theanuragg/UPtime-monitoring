@@ -3,10 +3,11 @@
 import { useEffect, useRef } from "react";
 import { TrialButton } from "@components/ui/Trailbutton";
 import { useRouter } from "next/navigation";
-import { useUser, SignInButton } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 
 const Hero = () => {
   const heroRef = useRef<HTMLDivElement>(null);
+
   const { isSignedIn, isLoaded } = useUser();
   const router = useRouter();
 
@@ -36,51 +37,49 @@ const Hero = () => {
     };
   }, []);
 
-  if (!isLoaded) return null; 
-
-  if (isSignedIn) {
-    return (
-      <main className="min-h-screen flex items-center justify-center bg-black text-white">
-        <TrialButton
-          text="Go to Dashboard"
-          onClick={() => {
-            router.push("/dashboard");
-          }}
-        />
-      </main>
-    );
-  }
-
   return (
-    <main
-      ref={heroRef}
-      className="relative min-h-screen flex items-center justify-center bg-black text-white overflow-hidden"
-    >
-      <div className="z-10 text-center px-4">
-        {/* First Line */}
-        <h1 className="text-3xl sm:text-6xl custom-heading reveal">
-          Know when your services are
+    <main className="relative min-h-screen flex items-center justify-center bg-black text-white overflow-hidden">
+      <div ref={heroRef} className="z-10 text-center px-4">
+        <h1
+          className={`text-3xl sm:text-6xl custom-heading reveal ${
+            !isLoaded ? "bg-gray-700 text-transparent rounded-md inline-block animate-pulse" : ""
+          }`}
+        >
+          {isLoaded ? "Know when your services are" : ""}
         </h1>
 
-        {/* Second Line */}
         <div className="flex justify-center items-center flex-wrap gap-2 mt-2 sm:mt-4 text-3xl sm:text-6xl">
-          <h1 className="font-semibold select-text custom-heading reveal">
-            Down before your
+          <h1
+            className={`font-semibold select-text custom-heading reveal ${
+              !isLoaded ? "bg-gray-700 text-transparent rounded-md inline-block animate-pulse" : ""
+            }`}
+          >
+            {isLoaded ? "Down before your" : ""}
           </h1>
-          <span className="text-primary font-main font-normal custom-heading2 reveal select-text">
-            users
+          <span
+            className={`text-primary font-main font-normal custom-heading2 reveal select-text ${
+              !isLoaded ? "bg-gray-700 text-transparent rounded-md inline-block animate-pulse" : ""
+            }`}
+          >
+            {isLoaded ? "users" : "......"}
           </span>
         </div>
 
-        {/* Subheading */}
-        <p className="mt-8 text-secondary mb-4 max-w-md mx-auto">
-          Powerful analytics and reporting that empowers your team to make
-          smarter business choices.
+        <p
+          className={`mt-8 text-secondary mb-4 max-w-md mx-auto ${
+            !isLoaded ? "bg-gray-800 text-transparent animate-pulse rounded-md" : ""
+          }`}
+        >
+          {isLoaded
+            ? "Powerful analytics and reporting that empowers your team to make smarter business choices."
+            : ".........................................................."}
         </p>
 
-        <SignInButton mode="modal">
+        {isLoaded && isSignedIn ? (
+          <TrialButton text="Get Started" onClick={() => router.push("/dashboard")} />
+        ) : (
           <TrialButton text="Get Started" />
-        </SignInButton>
+        )}
       </div>
     </main>
   );
