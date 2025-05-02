@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import axios from "axios";
 import { AreaChart, Area } from "recharts";
 import { useParams } from "next/navigation";
@@ -47,17 +47,7 @@ export default function ServicePage() {
   const router = useRouter();
   const { user } = useUser();
 
-  useEffect(() => {
-    // Redirect to '/' if the user does not exist
-    if (!user) {
-      router.push("/");
-      return;
-    }
-
-    if (serviceId) fetchWebsiteStatus();
-  }, [serviceId, user]);
-
-  const fetchWebsiteStatus = async () => {
+  const fetchWebsiteStatus = useCallback(async () => {
     try {
       setRefreshing(true);
       const res = await axios.post<{ website: Website }>(
@@ -83,11 +73,18 @@ export default function ServicePage() {
       setLoading(false);
       setRefreshing(false);
     }
-  };
+  }, [serviceId, userId]);
 
   useEffect(() => {
-    if (serviceId) fetchWebsiteStatus();
-  }, [serviceId, userId]);
+    if (!user) {
+      router.push("/");
+      return;
+    }
+
+    if (serviceId) {
+      fetchWebsiteStatus();
+    }
+  }, [user, serviceId, fetchWebsiteStatus, router]);
 
   const coloredChartData = useMemo(() => {
     if (!website) return [];
