@@ -7,8 +7,7 @@ import { useUser, SignInButton } from "@clerk/nextjs";
 
 const Hero = () => {
   const heroRef = useRef<HTMLDivElement>(null);
-
-  const { isSignedIn } = useUser();
+  const { isSignedIn, isLoaded } = useUser();
   const router = useRouter();
 
   useEffect(() => {
@@ -36,26 +35,34 @@ const Hero = () => {
       }
     };
   }, []);
+
+  if (!isLoaded) return null; 
+
   if (isSignedIn) {
     return (
-      <TrialButton
-        text="Get Started"
-        onClick={() => {
-          router.push("/dashboard");
-        }}
-      />
+      <main className="min-h-screen flex items-center justify-center bg-black text-white">
+        <TrialButton
+          text="Go to Dashboard"
+          onClick={() => {
+            router.push("/dashboard");
+          }}
+        />
+      </main>
     );
   }
 
   return (
-    <main className="relative min-h-screen flex items-center justify-center bg-black text-white overflow-hidden">
+    <main
+      ref={heroRef}
+      className="relative min-h-screen flex items-center justify-center bg-black text-white overflow-hidden"
+    >
       <div className="z-10 text-center px-4">
         {/* First Line */}
         <h1 className="text-3xl sm:text-6xl custom-heading reveal">
           Know when your services are
         </h1>
 
-        {/* Second Line in flex-row */}
+        {/* Second Line */}
         <div className="flex justify-center items-center flex-wrap gap-2 mt-2 sm:mt-4 text-3xl sm:text-6xl">
           <h1 className="font-semibold select-text custom-heading reveal">
             Down before your
@@ -72,7 +79,7 @@ const Hero = () => {
         </p>
 
         <SignInButton mode="modal">
-          <TrialButton text="Get Started"/>
+          <TrialButton text="Get Started" />
         </SignInButton>
       </div>
     </main>
